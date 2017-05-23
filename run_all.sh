@@ -1,0 +1,1 @@
+for (( i=0; i<=$(nproc); i++ )); do supervisorctl start redirector_$i; done

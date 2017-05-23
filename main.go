@@ -35,7 +35,7 @@ func main() {
 	flag.StringVar(&templateName, "templateName", "template.conf", "template file full name")
 	flag.StringVar(&outputFile, "outputFile", "redirector.conf", "output file name")
 	flag.IntVar(&cpuCount, "cpuCount", 4, "cpu count")
-	flag.IntVar(&port, "port", 9000, "port")
+	flag.IntVar(&port, "port", 9001, "port")
 	flag.Parse()
 
 	buffer := &bytes.Buffer{}

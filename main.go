@@ -7,6 +7,7 @@ import (
 	"github.com/prometheus/common/log"
 	"os"
 	"text/template"
+	"strconv"
 )
 
 var (
@@ -16,6 +17,7 @@ var (
 	templateName string
 	outputFile   string
 	cpuCount     int
+	port int
 )
 
 type Payload struct {
@@ -23,29 +25,17 @@ type Payload struct {
 	ConfigPath  string
 	Workdir     string
 	Mask        string
-}
-
-func GetMask(procCount, procNum int) string {
-	mask := make([]byte, procCount)
-
-	for i := 0; i < procCount; i++ {
-		if i == procNum {
-			mask[i] = byte('1')
-		} else {
-			mask[i] = byte('0')
-		}
-	}
-
-	return string(mask)
+	Port		int
 }
 
 func main() {
 	flag.StringVar(&programName, "programName", "redirector", "name of process in supervisor")
-	flag.StringVar(&configPath, "configPath", "", "path to config file")
+	flag.StringVar(&configPath, "configPath", "config.toml", "path to config file")
 	flag.StringVar(&workdir, "workdir", "", "working directory")
 	flag.StringVar(&templateName, "templateName", "template.conf", "template file full name")
 	flag.StringVar(&outputFile, "outputFile", "redirector.conf", "output file name")
 	flag.IntVar(&cpuCount, "cpuCount", 4, "cpu count")
+	flag.IntVar(&port, "port", 9000, "port")
 	flag.Parse()
 
 	buffer := &bytes.Buffer{}
@@ -55,7 +45,8 @@ func main() {
 			ProgramName: fmt.Sprintf("%s_%d", programName, i),
 			ConfigPath:  configPath,
 			Workdir:     workdir,
-			Mask:        GetMask(cpuCount, i),
+			Mask:        strconv.Itoa(1 << uint(i)),
+			Port: port + i,
 		}
 
 		if t, err := template.ParseFiles(templateName); err == nil {

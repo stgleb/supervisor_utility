@@ -1,1 +1,1 @@
-for (( i=0; i<=$(nproc); i++ )); do supervisorctl stop redirector_$i; done
+for (( i=0; i<=$(nproc); i++ )); do supervisorctl stop redirector_$i; sleep 1; done
